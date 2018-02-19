@@ -11,7 +11,8 @@ const storeSchema = new mongoose.Schema({
   slug: String,
   description: {
     type: String,
-    trim: true
+    trim: true,
+    required: 'Please include a description!'
   },
   tags: [String],
   created: {
@@ -21,7 +22,7 @@ const storeSchema = new mongoose.Schema({
   location: {
     type: {
       type: String,
-      Default: 'Point'
+      default: 'Point'
     },
     coordinates: [{
       type: Number,
