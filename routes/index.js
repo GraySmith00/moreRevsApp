@@ -79,8 +79,12 @@ router.post('/login', authController.login);
 router.get('/logout', authController.logout);
 
 
+// ACCOUNT PAGE
+// ==================================================
+router.get('/account', authController.isLoggedIn, userController.account);
 
-
+// account post action
+router.post('/account', catchErrors(userController.updateAccount))
 
 
 

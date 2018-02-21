@@ -28,10 +28,31 @@ exports.register = async (req, res, next) => {
   const register = promisify(User.register, User);
   await register(user, req.body.password);
   next(); // pass to authController.login
-}
+};
 
+// ACCOUNT PAGE
+// ==================================================
+exports.account = (req, res) => {
+  res.render('account', { title: 'Edit Your Account' });
+};
 
-
+exports.updateAccount = async (req, res) => {
+  // define fields you want to update
+  const updates = {
+    name: req.body.name,
+    email: req.body.email
+  };
+  
+  // find and update the user with only the available params
+  // findOneAndUpdate takes 3 params (the query, updates, and options)
+  const user = await User.findOneAndUpdate( 
+    { _id: req.user._id}, //query
+    { $set: updates }, //updates
+    { new: true, runValidators: true, context: 'query' } //options
+  );
+  req.flash('success', 'Your profile has been updated')
+  res.redirect('back');
+};
 
 
 
