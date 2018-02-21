@@ -105,8 +105,20 @@ exports.updateStore = async (req, res) => {
 // TAGS PAGE
 // ==================================================
 exports.getStoresByTag = async (req, res) => {
-  const tags = await Store.getTagsList();
-  const tag = req.params.tag;
+  // gets individual tag from the url
+  const tag = req.params.tag; 
+  // determines whether all stores should be displayed or filtered by the tag in the url
+  const tagQuery = tag || { $exists: true }
+  // gets the tags from the stores and their count, see getTagsList method in Store.js model
+  const tagsPromise = Store.getTagsList();
+  // finds the stores that include an individual tag
+  const storesPromise = Store.find({ tags: tagQuery });
+  
+  // await both promises at once so they can happen asynchronously
+  // result [tags, stores] lists each tag w its count, and each store that includes the selected tag
+  const [tags, stores] = await Promise.all([tagsPromise, storesPromise]);
+  
   // res.json(tags);
-  res.render('tag', { tags, title: 'Tags', tag });
+  //res.json([tags, stores]);
+  res.render('tag', { tags, title: 'Tags', tag, stores });
 };
