@@ -2,11 +2,50 @@
 // ==================================================
 const mongoose = require('mongoose');
 const Store = mongoose.model('Store');
+const multer = require('multer'); // enable multipart for image file upload
+const jimp = require('jimp'); // resize photos
+const uuid = require('uuid'); // unique identifier for when people upload images with the same file name
+
+const multerOptions = {
+  storage: multer.memoryStorage(),
+  fileFilter(req, file, next) {
+    const isPhoto = file.mimetype.startsWith('image/');
+    if(isPhoto) {
+      next(null, true);
+    } else {
+      next({ message: "That file type isn't supported."}, false);
+    }
+  }
+}
 
 // NEW ACTION
 // ==================================================
 exports.addStore = (req, res) => {
   res.render('editStore', { title: 'Add Store' });
+};
+
+// PHOTO UPLOAD MIDDLEWARE
+// ==================================================
+exports.upload = multer(multerOptions).single('photo');
+
+// PHOTO RESIZE MIDDLEWARE
+// ==================================================
+exports.resize = async (req, res, next) => {
+  // check if there is a new file to resize
+  if (!req.file) {
+    next(); // no file, skip this function
+    return;
+  } 
+  const extension = req.file.mimetype.split('/')[1];
+  req.body.photo = `${uuid.v4()}.${extension}`;
+  
+  // now we resize the photo
+  const photo = await jimp.read(req.file.buffer);
+  await photo.resize(800, jimp.AUTO);
+  await photo.write(`./public/uploads/${req.body.photo}`);
+  
+  // once we have written the photo to our filesystem, keep going!
+  next();
 };
 
 // CREATE ACTION
