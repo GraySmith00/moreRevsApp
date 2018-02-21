@@ -30,7 +30,7 @@ router.post('/add',
 
 // STORECONTROLLER SHOW PAGE
 // ==================================================
-router.get('/store/:slug', catchErrors(storeController.getStoreBySlug))
+router.get('/store/:slug', catchErrors(storeController.getStoreBySlug));
 
 // STORECONTROLLER EDIT PAGE
 // ==================================================
@@ -44,7 +44,13 @@ router.post('/add/:id',
   catchErrors(storeController.updateStore)
 );
 
+// ALL TAGS PAGE
+// ==================================================
+router.get('/tags', catchErrors(storeController.getStoresByTag));
 
+// ALL STORES WITH ONE CERTAIN TAG PAGE
+// ==================================================
+router.get('/tags/:tag', catchErrors(storeController.getStoresByTag));
 
 
 // EXPORT ROUTER

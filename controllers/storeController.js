@@ -84,7 +84,7 @@ exports.editStore = async (req, res) => {
   
   // 3. Render Edit form so user can edit store
   res.render('editStore', { title: `Edit ${store.name}`, store: store });
-}
+};
 
 // UPDATE ACTION
 // ==================================================
@@ -100,4 +100,13 @@ exports.updateStore = async (req, res) => {
   // 2. Redirect to store page and flash success
   req.flash('success', `Successfully updated <strong>${store.name}</strong>. <a href="/stores/${store.slug}">View Store</a>`);
   res.redirect(`/stores/${store._id}/edit`);
-}
+};
+
+// TAGS PAGE
+// ==================================================
+exports.getStoresByTag = async (req, res) => {
+  const tags = await Store.getTagsList();
+  const tag = req.params.tag;
+  // res.json(tags);
+  res.render('tag', { tags, title: 'Tags', tag });
+};

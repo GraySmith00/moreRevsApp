@@ -59,6 +59,17 @@ storeSchema.pre('save', async function(next) {
   next();
 });
 
+// ADD A STATIC METHOD ONTO THE SCHEMA FOR TAGS
+//==================================================
+storeSchema.statics.getTagsList = function() {
+  // aggregate is a built in method that takes an array of possible operators that were looking for
+  return this.aggregate([
+    { $unwind: '$tags' }, // unwind seperates out each tag associated with a store
+    { $group: { _id: '$tags', count: { $sum: 1 } } }, // group adds each instance of a tag to that tags count
+    { $sort: { count: -1 } } // sorts by which tags have the highest count
+  ]); 
+}
+
 
 // MODULE.EXPORTS STORE MODEL
 //==================================================
