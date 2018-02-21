@@ -6,6 +6,8 @@ const router = express.Router();
 // REQUIRE CONTROLLERS
 // ==================================================
 const storeController = require('../controllers/storeController');
+const userController = require('../controllers/userController');
+const authController = require('../controllers/authController');
 
 // CATCH ERROR WRAPPER
 // ==================================================
@@ -51,6 +53,33 @@ router.get('/tags', catchErrors(storeController.getStoresByTag));
 // ALL STORES WITH ONE CERTAIN TAG PAGE
 // ==================================================
 router.get('/tags/:tag', catchErrors(storeController.getStoresByTag));
+
+// AUTHENTICATION
+// ==================================================
+// login page
+router.get('/login', userController.loginForm);
+
+// register page
+router.get('/register', userController.registerForm);
+
+// register post action
+router.post('/register', 
+  // 1. validate registration data
+  userController.validateRegister,
+  // 2. register the user
+  userController.register, 
+  // 3. log the user in
+  authController.login
+);
+
+// logout route
+router.get('/logout', authController.logout);
+
+
+
+
+
+
 
 
 // EXPORT ROUTER
