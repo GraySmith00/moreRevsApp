@@ -62,7 +62,17 @@ exports.getStores = async (req, res) => {
   // 1. Query the database for a list of all stores
   const stores = await Store.find();
   res.render('stores', { title: 'Stores', stores: stores });
-}
+};
+
+// SHOW ACTION
+// ==================================================
+exports.getStoreBySlug = async (req, res) => {
+  const store = await Store.findOne({ slug: req.params.slug });
+  if (!store) {
+    return next();
+  }
+  res.render('store', { store });
+};
 
 // EDIT PAGE
 // ==================================================
@@ -76,7 +86,7 @@ exports.editStore = async (req, res) => {
   res.render('editStore', { title: `Edit ${store.name}`, store: store });
 }
 
-// EDIT PAGE
+// UPDATE ACTION
 // ==================================================
 exports.updateStore = async (req, res) => {
   // set the location data to be type of point

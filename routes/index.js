@@ -28,6 +28,10 @@ router.post('/add',
   catchErrors(storeController.createStore)
 );
 
+// STORECONTROLLER SHOW PAGE
+// ==================================================
+router.get('/store/:slug', catchErrors(storeController.getStoreBySlug))
+
 // STORECONTROLLER EDIT PAGE
 // ==================================================
 router.get('/stores/:id/edit', catchErrors(storeController.editStore));
@@ -43,6 +47,7 @@ router.post('/add/:id',
 
 
 
-
+// EXPORT ROUTER
+// ==================================================
 module.exports = router;
 
