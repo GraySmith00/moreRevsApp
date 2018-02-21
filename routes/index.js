@@ -62,7 +62,7 @@ router.get('/login', userController.loginForm);
 // register page
 router.get('/register', userController.registerForm);
 
-// register post action
+// register create user post action
 router.post('/register', 
   // 1. validate registration data
   userController.validateRegister,
@@ -71,6 +71,9 @@ router.post('/register',
   // 3. log the user in
   authController.login
 );
+
+// login create session action
+router.post('/login', authController.login);
 
 // logout route
 router.get('/logout', authController.logout);
