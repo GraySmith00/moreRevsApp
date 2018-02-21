@@ -20,11 +20,11 @@ router.get('/stores', catchErrors(storeController.getStores));
 
 // STORECONTROLLER NEW PAGE
 // ==================================================
-router.get('/add', storeController.addStore);
+router.get('/add', authController.isLoggedIn, storeController.addStore);
 
 // STORECONTROLLER CREATE ACTION
 // ==================================================
-router.post('/add', 
+router.post('/add',
   storeController.upload, 
   catchErrors(storeController.resize), 
   catchErrors(storeController.createStore)
