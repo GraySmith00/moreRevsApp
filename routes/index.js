@@ -84,9 +84,19 @@ router.get('/logout', authController.logout);
 router.get('/account', authController.isLoggedIn, userController.account);
 
 // account post action
-router.post('/account', catchErrors(userController.updateAccount))
+router.post('/account', catchErrors(userController.updateAccount));
 
+// forgot password submit page
+router.post('/account/forgot', catchErrors(authController.forgot));
 
+// forgot password token reset form
+router.get('/account/reset/:token', catchErrors(authController.reset));
+
+// reset form post action to submit new password
+router.post('/account/reset/:token', 
+  authController.confirmedPasswords, // middleware to check to make sure both passwords match
+  catchErrors(authController.update)
+);
 
 
 // EXPORT ROUTER

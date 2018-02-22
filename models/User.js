@@ -1,3 +1,5 @@
+// USER MODEL 
+// ==================================================
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 mongoose.Promise = global.Promise; 
@@ -19,7 +21,9 @@ const userSchema = new Schema({
     type: String,
     required: 'Please supply a name',
     trim: true 
-  }
+  },
+  resetPasswordToken: String,
+  resetPasswordExpires: Date
 });
 
 // add virtual field for user gravatar
