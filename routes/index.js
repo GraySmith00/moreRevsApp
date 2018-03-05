@@ -98,6 +98,9 @@ router.post('/account/reset/:token',
   catchErrors(authController.update)
 );
 
+// API ENDPOINTS
+// ==================================================
+router.get('/api/search', catchErrors(storeController.searchStores));
 
 // EXPORT ROUTER
 // ==================================================

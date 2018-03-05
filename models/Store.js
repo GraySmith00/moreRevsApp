@@ -41,6 +41,12 @@ const storeSchema = new mongoose.Schema({
   }
 });
 
+// INDEXES
+//==================================================
+storeSchema.index({
+  name: 'text',
+  description: 'text'
+});
 
 // SETTING THE SLUG BEFORE SAVING THE STORE
 //==================================================
