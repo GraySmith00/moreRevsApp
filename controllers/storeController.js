@@ -131,7 +131,22 @@ exports.getStoresByTag = async (req, res) => {
   res.render('tag', { tags, title: 'Tags', tag, stores });
 };
 
-// SEARCH STORES
+// MAP PAGE
+// ==================================================
+exports.mapPage = (req, res) => {
+  res.render('map', { title: 'Map' });
+};
+
+
+
+
+
+
+
+
+
+
+// SEARCH STORES API ENDPOINT 
 // ==================================================
 exports.searchStores = async (req, res) => {
   const stores = await Store
@@ -152,5 +167,25 @@ exports.searchStores = async (req, res) => {
   .limit(10);
   
   // return json of search results
+  res.json(stores);
+};
+
+// MAP STORES API ENDPOINT
+// ==================================================
+exports.mapStores = async (req, res) => {
+  const coordinates = [req.query.lng, req.query.lat].map(parseFloat);
+  const q = {
+    location: {
+      // near is a special operator in mongodb
+      $near: {
+        $geometry: {
+          type: 'Point',
+          coordinates: coordinates
+        },
+        $maxDistance: 10000 // 10km
+      }
+    }
+  };
+  const stores = await Store.find(q).select('slug name description location photo').limit(10);
   res.json(stores);
 };

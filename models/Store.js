@@ -48,6 +48,10 @@ storeSchema.index({
   description: 'text'
 });
 
+storeSchema.index({
+  location: '2dsphere'
+})
+
 // SETTING THE SLUG BEFORE SAVING THE STORE
 //==================================================
 storeSchema.pre('save', async function(next) {
