@@ -130,3 +130,27 @@ exports.getStoresByTag = async (req, res) => {
   //res.json([tags, stores]);
   res.render('tag', { tags, title: 'Tags', tag, stores });
 };
+
+// SEARCH STORES
+// ==================================================
+exports.searchStores = async (req, res) => {
+  const stores = await Store
+  // first find stores that contain search criteria
+  .find({
+    // mongodb text operator will perform search on any fields with a 'text' index type
+    $text: {
+      $search: req.query.q
+    }
+  }, {
+    score: { $meta: 'textScore' }
+  })
+  // sore stores by their metaData textScore
+  .sort({
+    score: { $meta: 'textScore' }
+  })
+  // limit to 10 results
+  .limit(10);
+  
+  // return json of search results
+  res.json(stores);
+};
