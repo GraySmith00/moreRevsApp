@@ -2,6 +2,8 @@
 // ==================================================
 const mongoose = require('mongoose');
 const Store = mongoose.model('Store');
+const User = mongoose.model('User');
+
 const multer = require('multer'); // enable multipart for image file upload
 const jimp = require('jimp'); // resize photos
 const uuid = require('uuid'); // unique identifier for when people upload images with the same file name
@@ -144,8 +146,6 @@ exports.mapPage = (req, res) => {
 
 
 
-
-
 // SEARCH STORES API ENDPOINT 
 // ==================================================
 exports.searchStores = async (req, res) => {
@@ -191,4 +191,30 @@ exports.mapStores = async (req, res) => {
                         .select('slug name description location photo')
                         .limit(10);
   res.json(stores);
+};
+
+// HEART STORE POST TO API
+// ==================================================
+exports.heartStore = async (req, res) => {
+  const hearts = req.user.hearts.map(obj => obj.toString());
+  const operator = hearts.includes(req.params.id) ? '$pull' : '$addToSet'; // addToSet is like push, but makes sure its not adding a duplicate
+  const user = await User
+                      // finds the current user
+                      .findByIdAndUpdate(req.user._id,
+                      // either deletes or adds store object id to hearts array depending on whether it was there before
+                        { [operator]: { hearts: req.params.id } },
+                      // returns newly updated user
+                        { new: true }
+                      );
+  res.json(user);
+};
+
+// GET HEARTS
+// ==================================================
+exports.getHearts = async (req, res) => {
+  const stores = await Store.find({
+    _id: { $in: req.user.hearts }
+  });
+  
+  res.render('stores', { title: 'Hearted Stores', stores })
 };
