@@ -27,4 +27,13 @@ const reviewSchema = new mongoose.Schema({
     }
 });
 
+// make sure the review data is populated for when we need to display fields like author name
+function autopopulate(next) {
+    this.populate('author');
+    next();
+}
+
+reviewSchema.pre('find', autopopulate);
+reviewSchema.pre('findOne', autopopulate);
+
 module.exports = mongoose.model('Review', reviewSchema);

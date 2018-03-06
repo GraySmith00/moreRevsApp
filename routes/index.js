@@ -8,6 +8,7 @@ const router = express.Router();
 const storeController = require('../controllers/storeController');
 const userController = require('../controllers/userController');
 const authController = require('../controllers/authController');
+const reviewController = require('../controllers/reviewController');
 
 // CATCH ERROR WRAPPER
 // ==================================================
@@ -104,7 +105,15 @@ router.get('/map', storeController.mapPage);
 
 // HEARTS PAGE
 // ==================================================
-router.get('/hearts', authController.isLoggedIn, catchErrors(storeController.getHearts))
+router.get('/hearts', authController.isLoggedIn, catchErrors(storeController.getHearts));
+
+// REVIEW CREATE ACTION
+// ==================================================
+router.post('/reviews/:id', authController.isLoggedIn, catchErrors(reviewController.addReview));
+
+
+
+
 
 // API ENDPOINTS
 // ==================================================
