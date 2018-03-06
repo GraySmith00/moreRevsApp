@@ -102,6 +102,10 @@ router.post('/account/reset/:token',
 // ==================================================
 router.get('/map', storeController.mapPage);
 
+// HEARTS PAGE
+// ==================================================
+router.get('/hearts', authController.isLoggedIn, catchErrors(storeController.getHearts))
+
 // API ENDPOINTS
 // ==================================================
 router.get('/api/search', catchErrors(storeController.searchStores));
