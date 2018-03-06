@@ -39,6 +39,10 @@ const storeSchema = new mongoose.Schema({
     ref: 'User',
     required: 'You must supply an author.'
   }
+}, {
+  // brings the data from the virtuals into the store object without having to explicitly call it
+  toJSON: { virtuals: true },
+  toObject: { virtuals: true }
 });
 
 // INDEXES
@@ -85,6 +89,17 @@ storeSchema.statics.getTagsList = function() {
   ]); 
 }
 
+// VIRTUAL POPULATE - ADD REVIEWS FIELD TO SCHEMA
+//==================================================
+// find reviews where the stores _id property === reviews store property
+storeSchema.virtual('reviews', {
+  // what model are we linking?
+  ref: 'Review',
+  // which field on our store needs to match up with the field on our foreign model, reviews are saving store id
+  localField: '_id',
+  // which field on the foreign model matches up with the store
+  foreignField: 'store'
+});
 
 // MODULE.EXPORTS STORE MODEL
 //==================================================
