@@ -141,7 +141,13 @@ exports.mapPage = (req, res) => {
   res.render('map', { title: 'Map' });
 };
 
-
+// TOP STORES PAGE
+// ==================================================
+exports.getTopStores = async (req, res) => {
+  const stores = await Store.getTopStores();
+  //res.json(stores);
+  res.render('topStores', { stores, title: '⭐ Top Stores!' })
+};
 
 
 

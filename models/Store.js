@@ -89,6 +89,35 @@ storeSchema.statics.getTagsList = function() {
   ]); 
 }
 
+// GET TOP STORES METHOD
+//==================================================
+storeSchema.statics.getTopStores = function() {
+  return this.aggregate([
+    // look up stores and populate their reviews
+    { $lookup: {
+        from: 'reviews', 
+        localField: '_id', 
+        foreignField: 'store', 
+        as: 'reviews'
+      } 
+    },
+    // filter for only items that have 2 or more reviews
+    { $match: { 'reviews.1': { $exists: true } } },
+    // add the average reviews field
+    // create a new field called average rating, set it to be the average of reviews.rating field
+    { $addFields: { // use $project if below mongodb 3.4
+      // photo: '$$ROOT.photo',
+      // name: '$$ROOT.name',
+      // reviews: '$$ROOT.reviews',
+      averageRating: { $avg: '$reviews.rating'} // $ means that its a field from the data being piped in from the match
+    } },
+    // sort it by average reviews field, highest review average first
+    { $sort: { averageRating: -1 } },
+    // limit to 10 top stores
+    { $limit: 10 }
+  ]);
+};
+
 // VIRTUAL POPULATE - ADD REVIEWS FIELD TO SCHEMA
 //==================================================
 // find reviews where the stores _id property === reviews store property
@@ -100,6 +129,16 @@ storeSchema.virtual('reviews', {
   // which field on the foreign model matches up with the store
   foreignField: 'store'
 });
+
+// AUTO-POPULATE STORE OBJECT WITH REVIEW DATA
+//==================================================
+function autopopulate(next) {
+  this.populate('reviews');
+  next();
+}
+
+storeSchema.pre('find', autopopulate);
+storeSchema.pre('findOne', autopopulate);
 
 // MODULE.EXPORTS STORE MODEL
 //==================================================
