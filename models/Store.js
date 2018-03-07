@@ -130,6 +130,16 @@ storeSchema.virtual('reviews', {
   foreignField: 'store'
 });
 
+// AUTO-POPULATE STORE OBJECT WITH REVIEW DATA
+//==================================================
+function autopopulate(next) {
+  this.populate('reviews');
+  next();
+}
+
+storeSchema.pre('find', autopopulate);
+storeSchema.pre('findOne', autopopulate);
+
 // MODULE.EXPORTS STORE MODEL
 //==================================================
 module.exports = mongoose.model('Store', storeSchema);
